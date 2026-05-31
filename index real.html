@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>For You ❤️</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Background */
+        .bg {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: url('birthdaybg.png') center/cover no-repeat;
+            filter: blur(6px) brightness(0.6);
+            z-index: -2;
+        }
+
+        .overlay-light {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle, rgba(255,182,193,0.2), transparent);
+            z-index: -1;
+        }
+
+        /* Floating balloons */
+        .balloons::before,
+        .balloons::after {
+            content: "🎈 🎉 🎂 🎁 🎈 🎉";
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-size: 26px;
+            animation: float 12s linear infinite;
+            opacity: 0.7;
+        }
+
+        .balloons::after {
+            top: 60%;
+            animation-duration: 16s;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh); }
+            100% { transform: translateY(-10vh); }
+        }
+
+        /* Container */
+        .container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Card */
+        .card {
+            width: 100%;
+            max-width: 420px;
+            padding: 30px 20px;
+            border-radius: 25px;
+
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(15px);
+
+            color: white;
+            text-align: center;
+
+            border: 1px solid rgba(255,255,255,0.2);
+
+            box-shadow: 
+                0 0 20px rgba(255,105,180,0.3),
+                0 0 40px rgba(255,105,180,0.2);
+
+            animation: fadeIn 1.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 2em;
+            text-shadow: 0 0 10px #ff6a88, 0 0 20px #ff99ac;
+        }
+
+        p {
+            opacity: 0.9;
+        }
+
+        /* 🎂 Cake */
+        .cake {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 15px auto;
+        }
+
+        .base {
+            width: 100px;
+            height: 50px;
+            background: linear-gradient(#ff9a9e, #ff6a88);
+            border-radius: 10px;
+            position: absolute;
+            bottom: 0;
+        }
+
+        .candle {
+            width: 8px;
+            height: 30px;
+            background: white;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 50px;
+            border-radius: 3px;
+        }
+
+        .flame {
+            width: 10px;
+            height: 15px;
+            background: orange;
+            border-radius: 50%;
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: flicker 0.2s infinite alternate;
+            cursor: pointer;
+        }
+
+        @keyframes flicker {
+            from { transform: translateX(-50%) scale(1); }
+            to { transform: translateX(-50%) scale(1.2); }
+        }
+
+        #blowText {
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        /* Button */
+        .gift-btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            border: none;
+            border-radius: 30px;
+
+            background: linear-gradient(45deg, #ff6a88, #ff99ac);
+            color: white;
+            cursor: pointer;
+
+            margin-top: 10px;
+        }
+
+        .gift-btn:hover {
+            box-shadow: 0 0 25px #ff6a88;
+        }
+
+        .hidden {
+    opacity: 0;
+    transform: scale(0.8);
+    pointer-events: none;
+}
+
+.gift-btn.show {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+
+    animation: glow 1s ease forwards, pulse 1.5s infinite;
+}
+
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 0px transparent;
+    }
+    100% {
+        box-shadow: 0 0 25px #ff6a88, 0 0 50px #ff99ac;
+    }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+
+
+    </style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+<div class="overlay-light"></div>
+<div class="balloons"></div>
+
+<div class="container">
+    <div class="card">
+        <h1>Happy Birthday SIMI 🎂</h1>
+        <p>A small surprise for you 💖</p>
+
+        <div class="cake">
+    <div class="candle">
+        <div class="flame" id="flame"></div>
+    </div>
+    <div class="base"></div>
+</div>
+
+<p id="blowText">Tap the candle 🎂</p>
+
+<button class="gift-btn hidden" id="giftBtn" onclick="goToSurprise()">
+    🎁 Open Your Gift
+</button>
+
+    </div>
+</div>
+
+<script>
+const flame = document.getElementById("flame");
+const blowText = document.getElementById("blowText");
+const giftBtn = document.getElementById("giftBtn");
+
+flame.addEventListener("click", () => {
+    flame.style.display = "none";
+    blowText.innerText = "Yay 🎉 Make a wish 💖";
+
+    // ✨ Show button with delay (dramatic effect)
+    setTimeout(() => {
+        giftBtn.classList.remove("hidden");
+        giftBtn.classList.add("show");
+    }, 1500);
+});
+
+flame.addEventListener("click", () => {
+    flame.style.display = "none";
+    blowText.innerText = "Yay 🎉 Make a wish 💖";
+
+    // ✨ spark effect
+    for (let i = 0; i < 20; i++) {
+        let spark = document.createElement("div");
+        spark.innerHTML = "✨";
+        spark.style.position = "absolute";
+        spark.style.left = "50%";
+        spark.style.top = "50%";
+        document.body.appendChild(spark);
+
+        setTimeout(() => spark.remove(), 1000);
+    }
+
+    // show button
+    setTimeout(() => {
+        giftBtn.classList.remove("hidden");
+        giftBtn.classList.add("show");
+    }, 1500);
+});
+
+function goToSurprise() {
+    window.location.href = "next part.html";
+}
+</script>
+
+</body>
+</html>
